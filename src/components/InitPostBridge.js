@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useHistory, withRouter } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { PostBridge } from '@kaokei/post-bridge/dist/index.es2015';
 
@@ -39,27 +39,17 @@ export const message = {
   },
 };
 
-function InitPostBridge(props) {
+function InitPostBridge() {
   const history = useHistory();
+  const location = useLocation();
 
   useEffect(() => {
     PostBridge.registerMethods({
-      pushState(route = {}) {
-        const path = route.path;
-        console.log('pushState path :>> ', path);
-        // 这里需要/作为前缀
-        const newPath = path[0] === '/' ? path : '/' + path;
-        history.push(newPath);
-      },
       replaceState(route = {}) {
         const path = route.path;
-        console.log('replaceState path :>> ', path);
         // 这里需要/作为前缀
         const newPath = path[0] === '/' ? path : '/' + path;
         history.replace(newPath);
-      },
-      go(args) {
-        history.go(args);
       },
     });
 
@@ -69,9 +59,9 @@ function InitPostBridge(props) {
 
   useEffect(() => {
     postBridge && postBridge.call('resetScroll');
-  }, [props.location.pathname]);
+  }, [location.pathname]);
 
   return null;
 }
 
-export default withRouter(InitPostBridge);
+export default InitPostBridge;
